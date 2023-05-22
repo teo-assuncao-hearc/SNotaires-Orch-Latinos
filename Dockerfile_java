@@ -1,0 +1,14 @@
+# Utilise l'image OpenJDK 19 comme base
+FROM openjdk:19
+
+# Définit le répertoire de travail de l'application
+WORKDIR /app
+
+# Copie le fichier jar de l'application dans le répertoire de travail
+COPY ./out/artifacts/sNotaires_Orch_Latinos/SNotaires-Orch-Latinos.jar /app
+
+# Expose le port 8080 pour que l'application puisse être accessible depuis l'extérieur
+EXPOSE 9090
+
+# Démarre l'application
+CMD ["java", "-jar", "SNotaires-Orch-Latinos.jar"]

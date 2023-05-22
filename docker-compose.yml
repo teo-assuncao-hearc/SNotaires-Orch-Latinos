@@ -1,0 +1,18 @@
+version: '3'
+services:
+  app-notaires:
+    build:
+      context: ../srest-les-latinos
+      dockerfile: Dockerfile_java
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../srest-les-latinos/listeNotaires.csv:/listeNotaires.csv
+  app-orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile_java
+    ports:
+      - "9090:9090"
+
+
