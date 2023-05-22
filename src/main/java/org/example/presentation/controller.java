@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Optional;
 
 
 @RestController
@@ -45,23 +46,10 @@ public class controller {
   }
 
   @PostMapping("/archiveracte")
-  public StringBuilder archiveActe(@RequestBody String anneeNaissance, String signature, int minuteNum, int minutaireNum, String designation) throws Exception {
-
-    System.out.println("minute num " + minuteNum);
-    JSONObject requestBody = new JSONObject();
-    requestBody.put("anneeNaissance", anneeNaissance);
-    requestBody.put("signature", signature);
-    requestBody.put("minuteNum", 0);
-    requestBody.put("minutaireNum", 0);
-    requestBody.put("designation", designation);
-
-
-
-    // Conversion du corps en chaîne JSON
-    String jsonBody = requestBody.toString();
+  public String archiveActe(@RequestBody String body) throws Exception {
 
     // Appel de l'API
-    StringBuilder response = Utils.sendPostRequest("http://localhost:8080/archiveracte", jsonBody);
+    String response = Utils.postMessage("http://localhost:8080/archiveracte", body);
 
     return response;
 

@@ -1,11 +1,27 @@
 package org.example.service;
 
+import ch.qos.logback.core.net.server.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import org.apache.hop.pipeline.transforms.httppost.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Scanner;
 
 public class Utils {
@@ -33,36 +49,20 @@ public class Utils {
         return null;
     }
 
-    // Méthode pour envoyer une requête POST avec un corps
-    public static StringBuilder sendPostRequest(String apiUrl, String jsonBody) throws IOException {
-        URL url = new URL(apiUrl);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-        // Configuration de la connexion
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setDoOutput(true);
+    // Méthode pour envoyer une requête POST avec un body
+    public static String postMessage(String apiUrl, String jsonBody) throws URISyntaxException, IOException, InterruptedException {
+        var client = HttpClient.newHttpClient();
+        var uri = new URI(apiUrl);
 
-        // Écriture du corps de la requête
-        DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-        outputStream.writeBytes(jsonBody);
-        outputStream.flush();
-        outputStream.close();
+        var request = HttpRequest.newBuilder(uri).
+        POST(HttpRequest.BodyPublishers.ofString(jsonBody)).header("Content-type", "application/json").
+        build();
 
-        // Récupération de la réponse
-        int responseCode = connection.getResponseCode();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String line;
-        StringBuilder response = new StringBuilder();
-        while ((line = reader.readLine()) != null) {
-            response.append(line);
-        }
-        reader.close();
+        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        //assertEquals(201, response.statusCode());
 
-        // Affichage de la réponse
-        System.out.println("Code de réponse : " + responseCode);
-        System.out.println("Réponse : " + response.toString());
 
-        return response;
+        return response.body();
     }
 }
