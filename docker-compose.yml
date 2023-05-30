@@ -8,11 +8,26 @@ services:
       - "8080:8080"
     volumes:
       - ../srest-les-latinos/listeNotaires.csv:/listeNotaires.csv
+    networks:
+      - architecture
+  app-actes:
+    build:
+      context: ../SExterne-REST-Latinos
+      dockerfile: Dockerfile_java
+    ports:
+      - "8181:8181"
+    networks:
+      - architecture
   app-orchestrator:
     build:
       context: .
       dockerfile: Dockerfile_java
     ports:
       - "9090:9090"
+    networks:
+      - architecture
+networks:
+  architecture:
+    driver: bridge
 
 
